@@ -7,6 +7,7 @@ import { api } from "~/utils/api";
 import "~/styles/globals.css";
 import { type ColorScheme, ColorSchemeProvider, MantineProvider } from "@mantine/core";
 import { useState } from "react";
+import Layout from "./layouts/admin-dashboard";
 
 const MyApp: AppType<{ session: Session | null }> = ({
   Component,
@@ -32,7 +33,9 @@ const MyApp: AppType<{ session: Session | null }> = ({
         }}
       >
         <SessionProvider session={session}>
-          <Component {...pageProps} />
+          <Layout>
+            <Component {...pageProps} />
+          </Layout>
         </SessionProvider>
       </MantineProvider>
     </ColorSchemeProvider>

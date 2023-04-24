@@ -17,6 +17,7 @@ import { IconSun, IconMoon } from '@tabler/icons-react';
 import { useSession } from 'next-auth/react';
 import { UserInfo } from '../UserInfo/UserInfo';
 import { Login } from '../Login/Login';
+import Link from 'next/link';
 const HEADER_HEIGHT = rem(80);
 
 const useStyles = createStyles((theme) => ({
@@ -105,18 +106,18 @@ export function Header({ links }: HeaderResponsiveProps) {
 
 
   const items = links.map((link) => (
-    <a
+    <Link
       key={link.label}
       href={link.link}
       className={cx(classes.link, { [classes.linkActive]: active === link.link })}
-      onClick={(event) => {
-        event.preventDefault();
+      onClick={() => {
+        console.log(';click');
         setActive(link.link);
         close();
       }}
     >
       {link.label}
-    </a>
+    </Link>
   ));
 
   return (
