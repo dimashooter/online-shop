@@ -1,9 +1,5 @@
-import styles from "./index.module.css";
 import { type NextPage } from "next";
 import Head from "next/head";
-import { signIn, signOut, useSession } from "next-auth/react";
-
-import { api } from "~/utils/api";
 import { Header } from "~/ui";
 import { AppShell, Navbar } from "@mantine/core";
 
@@ -17,12 +13,15 @@ const Home: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <AppShell
-        padding="md"
-        navbar={<Navbar width={{ base: 300 }} height={`calc(100vh - 100px)`} p='xs' >content</Navbar>}
+        padding="sm"
+        navbar={<Navbar width={{ base: 300 }} height={`calc(100vh - 100px)`}>
+          <Navbar.Section grow mt='md'>
+
+          </Navbar.Section>
+        </Navbar>}
         header={<Header links={[{ link: '/', label: 'home' }]} />
         }
       >
-        <AuthShowcase />
       </AppShell>
     </>
   );
@@ -30,26 +29,3 @@ const Home: NextPage = () => {
 
 export default Home;
 
-const AuthShowcase: React.FC = () => {
-  const { data: sessionData } = useSession();
-
-  const { data: secretMessage } = api.example.getSecretMessage.useQuery(
-    undefined, // no input
-    { enabled: sessionData?.user !== undefined },
-  );
-
-  return (
-    <div className={styles.authContainer}>
-      <p className={styles.showcaseText}>
-        {sessionData && <span>Logged in as {sessionData.user?.name}</span>}
-        {secretMessage && <span> - {secretMessage}</span>}
-      </p>
-      <button
-        className={styles.loginButton}
-        onClick={sessionData ? () => void signOut() : () => void signIn()}
-      >
-        {sessionData ? "Sign out" : "Sign in"}
-      </button>
-    </div>
-  );
-};

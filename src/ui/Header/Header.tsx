@@ -14,7 +14,10 @@ import {
 import { useDisclosure } from '@mantine/hooks';
 import { MantineLogo } from '@mantine/ds';
 import { IconSun, IconMoon } from '@tabler/icons-react';
-const HEADER_HEIGHT = rem(60);
+import { useSession } from 'next-auth/react';
+import { UserInfo } from '../UserInfo/UserInfo';
+import { Login } from '../Login/Login';
+const HEADER_HEIGHT = rem(80);
 
 const useStyles = createStyles((theme) => ({
   root: {
@@ -40,9 +43,10 @@ const useStyles = createStyles((theme) => ({
 
   header: {
     display: 'flex',
-    justifyContent: 'space-between',
+    justifyContent: 'start',
     alignItems: 'center',
     height: '100%',
+    gap: '2rem'
   },
 
   links: {
@@ -91,6 +95,9 @@ interface HeaderResponsiveProps {
 
 export function Header({ links }: HeaderResponsiveProps) {
   const [opened, { toggle, close }] = useDisclosure(false);
+
+  const { data: session } = useSession()
+
   const [active, setActive] = useState(links[0]!.link);
   const { classes, cx } = useStyles();
 
@@ -113,7 +120,7 @@ export function Header({ links }: HeaderResponsiveProps) {
   ));
 
   return (
-    <MantineHeader height={HEADER_HEIGHT} mb={120} className={classes.root}>
+    <MantineHeader height={HEADER_HEIGHT} className={classes.root}>
       <Container className={classes.header}>
         <MantineLogo size={28} />
         <Group spacing={5} className={classes.links}>
@@ -130,6 +137,9 @@ export function Header({ links }: HeaderResponsiveProps) {
           )}
         </Transition>
         <Button leftIcon={colorScheme === 'light' ? <IconSun /> : <IconMoon />} variant="subtle" onClick={() => toggleColorScheme()}></Button>
+        <Login />
+
+        {session && <UserInfo avatar={session.user.image || ''} name={session.user.name || ''} email={session.user.email || ''} />}
       </Container>
     </MantineHeader >
   );
