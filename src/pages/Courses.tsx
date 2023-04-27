@@ -1,6 +1,6 @@
 import { Flex, Loader, Text } from '@mantine/core'
-import { type Course } from '@prisma/client'
 import Head from 'next/head'
+import { toast } from 'react-hot-toast'
 import { Card } from '~/ui'
 import { Modal } from '~/ui/Modal/Modal'
 import { api } from '~/utils/api'
@@ -9,7 +9,9 @@ const Courses = () => {
 
 
 
-  const { data: courses, isLoading } = api.courses.getAll.useQuery()
+  const { data: courses, isLoading, } = api.courses.getAll.useQuery(undefined, {
+
+  })
 
   if (isLoading) {
     return <Loader />

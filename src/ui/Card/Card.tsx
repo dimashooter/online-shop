@@ -1,5 +1,7 @@
-import { Card as CardM, Image, Text, Badge, Button, Group } from '@mantine/core';
+import { Card as CardM, Image, Button, } from '@mantine/core';
 import { type Course } from '@prisma/client';
+import Link from 'next/link';
+import { Heading } from '../Heading/Heading';
 
 interface CardProps {
   course: Course
@@ -7,6 +9,9 @@ interface CardProps {
 
 export const Card = (props: CardProps) => {
   const { course } = props
+
+
+
   return (
     <CardM sx={() => ({
       maxWidth: '400px'
@@ -19,17 +24,12 @@ export const Card = (props: CardProps) => {
         />
       </CardM.Section>
 
-      <Group position="apart" mt="md" mb="xs">
-        <Text weight={500}>{course.title}</Text>
-      </Group>
-
-      <Text size="sm" color="dimmed">
-        {course.description}
-      </Text>
-
-      <Button variant="light" color="blue" fullWidth mt="md" radius="md">
-        Book classic tour now
-      </Button>
-    </CardM>
+      <Heading title={course.title.length > 20 ? course.title.slice(0, 20).concat('...') : course.title} subtitle={course.description.length > 50 ? course.title.slice(0, 50).concat('...') : course.description} />
+      <Link href={`/Courses/${course.id}`} >
+        <Button variant="light" color="blue" fullWidth mt="md" radius="md">
+          more
+        </Button>
+      </Link>
+    </CardM >
   );
 }

@@ -11,7 +11,9 @@ export default function Layout({ children }: LayoutProps) {
     <>
       <AppShell
         padding="sm"
-        navbar={<Navbar width={{ base: 300 }} height={`calc(100vh - 100px)`}>
+        navbar={<Navbar width={{ base: 300 }} height={`calc(100vh - 100px)`} sx={() => ({
+          zIndex: 0
+        })}>
           <Navbar.Section grow mt='md'>
             <MainLinks />
           </Navbar.Section>

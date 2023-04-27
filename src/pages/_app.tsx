@@ -4,10 +4,11 @@ import { SessionProvider } from "next-auth/react";
 
 import { api } from "~/utils/api";
 
-import "~/styles/globals.css";
+import "~/styles/globals.scss";
 import { type ColorScheme, ColorSchemeProvider, MantineProvider } from "@mantine/core";
 import { useState } from "react";
 import Layout from "./layouts/admin-dashboard";
+import { ToasterProvider } from "~/Providers/ToastProvider";
 
 const MyApp: AppType<{ session: Session | null }> = ({
   Component,
@@ -35,6 +36,7 @@ const MyApp: AppType<{ session: Session | null }> = ({
         <SessionProvider session={session}>
           <Layout>
             <Component {...pageProps} />
+            <ToasterProvider />
           </Layout>
         </SessionProvider>
       </MantineProvider>

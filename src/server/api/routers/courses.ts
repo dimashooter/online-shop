@@ -20,4 +20,13 @@ export const courcesRouter = createTRPCRouter({
   getAll: protectedProcedure.query(({ ctx }) => {
     return ctx.prisma.course.findMany();
   }),
-});
+  getOne:protectedProcedure.input(z.object({courseId:z.string()})).query(async ({ctx,input}) => {
+    const data = await ctx.prisma.course.findFirst({
+      where:{
+        id: input.courseId
+      }
+    })
+    
+    return data
+  })
+})

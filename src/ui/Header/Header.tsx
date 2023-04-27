@@ -47,7 +47,8 @@ const useStyles = createStyles((theme) => ({
     justifyContent: 'start',
     alignItems: 'center',
     height: '100%',
-    gap: '2rem'
+    gap: '2rem',
+    maxWidth: '100%'
   },
 
   links: {
@@ -111,7 +112,6 @@ export function Header({ links }: HeaderResponsiveProps) {
       href={link.link}
       className={cx(classes.link, { [classes.linkActive]: active === link.link })}
       onClick={() => {
-        console.log(';click');
         setActive(link.link);
         close();
       }}
@@ -137,10 +137,11 @@ export function Header({ links }: HeaderResponsiveProps) {
             </Paper>
           )}
         </Transition>
-        <Button leftIcon={colorScheme === 'light' ? <IconSun /> : <IconMoon />} variant="subtle" onClick={() => toggleColorScheme()}></Button>
-        <Login />
+
 
         {session && <UserInfo avatar={session.user.image || ''} name={session.user.name || ''} email={session.user.email || ''} />}
+        <Login />
+        <Button leftIcon={colorScheme === 'light' ? <IconSun /> : <IconMoon />} variant="subtle" onClick={() => toggleColorScheme()}></Button>
       </Container>
     </MantineHeader >
   );
