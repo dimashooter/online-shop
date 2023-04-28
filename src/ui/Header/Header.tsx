@@ -92,21 +92,20 @@ const useStyles = createStyles((theme) => ({
 }));
 
 interface HeaderResponsiveProps {
-  links: { link: string; label: string }[];
+  links?: { link: string; label: string }[];
 }
 
 export function Header({ links }: HeaderResponsiveProps) {
   const [opened, { toggle, close }] = useDisclosure(false);
 
   const { data: session } = useSession()
-
-  const [active, setActive] = useState(links[0]!.link);
+  const [active, setActive] = useState(links[0]?.link);
   const { classes, cx } = useStyles();
 
-  const { colorScheme, toggleColorScheme } = useMantineColorScheme()
+  const { colorScheme } = useMantineColorScheme()
 
 
-  const items = links.map((link) => (
+  const items = links?.map((link) => (
     <Link
       key={link.label}
       href={link.link}

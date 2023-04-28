@@ -1,4 +1,5 @@
 import { AppShell, Navbar } from "@mantine/core";
+import { usePathname } from "next/navigation";
 import { type ReactNode } from "react";
 import { Header, MainLinks } from "~/ui";
 
@@ -7,6 +8,8 @@ interface LayoutProps {
 }
 
 export default function Layout({ children }: LayoutProps) {
+
+  const pathname = usePathname()
   return (
     <>
       <AppShell
@@ -18,7 +21,7 @@ export default function Layout({ children }: LayoutProps) {
             <MainLinks />
           </Navbar.Section>
         </Navbar>}
-        header={<Header links={[{ link: '/', label: 'home' }]} />
+        header={<Header links={pathname !== '/' ? [{ link: '/', label: 'home' }] : []} />
         }
       >
         {children}
