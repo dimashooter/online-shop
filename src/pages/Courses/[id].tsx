@@ -1,22 +1,35 @@
-import { Flex, Loader, Stack, Text } from '@mantine/core'
+import { Button, Flex, Loader, Stack, Text } from '@mantine/core'
+import { IconEdit } from '@tabler/icons-react'
 import { useRouter } from 'next/router'
+import { useCallback, useState } from 'react'
 import { toast } from 'react-hot-toast'
+import EditCourse from '~/features/EditCourse/EditCourse'
 import { api } from '~/utils/api'
 
 const FullCourse = () => {
 
   const router = useRouter()
 
-  const { id } = router.query
-  if (!id) {
-    return null
-  }
-  const { data: course, isLoading } = api.courses.getOne.useQuery({ courseId: id as string }, {
-    enabled: Boolean(id),
+  const [isEdit, setIsEdit] = useState(false)
+
+  const closeEdit = useCallback(() => {
+    setIsEdit(false)
+  }, [])
+  const openEdit = useCallback(() => {
+    setIsEdit(true)
+  }, [])
+  const id = router.query.id as string
+
+  const { data: course, isLoading, refetch } = api.courses.getOne.useQuery({ courseId: id }, {
+    enabled: !!id,
     onSuccess: () => {
       toast.success("Data success loaded!")
     }
   })
+
+  if (!id) {
+    return null
+  }
 
   if (isLoading) {
     return (
@@ -25,17 +38,47 @@ const FullCourse = () => {
       </Flex>
     )
   }
+
+  console.log(isEdit);
+
+
   return (
-    <div>
-      <Stack>
-        <Text size='lg'>
-          {course?.title}
-        </Text>
-        <Text size='sm' color='teal'>
-          {course?.description}
-        </Text>
-      </Stack>
-    </div>
+    <>
+      {
+        isEdit ?
+          <div style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            gap: '10px'
+          }}>
+            <EditCourse id={id} close={closeEdit} title={course?.title}
+              description={course?.description} />
+            <Button>
+              <IconEdit onClick={closeEdit} />
+            </Button>
+
+          </div>
+          :
+          <div style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            gap: '10px'
+          }}>
+            <Stack>
+              <Text size='lg'>
+                {course?.title}
+              </Text>
+              <Text size='sm' color='teal'>
+                {course?.description}
+              </Text>
+            </Stack>
+            <Button onClick={openEdit}>
+              <IconEdit />
+            </Button>
+          </div>
+      }
+
+    </>
   )
 }
 export default FullCourse

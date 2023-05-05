@@ -18,6 +18,7 @@ import { useSession } from 'next-auth/react';
 import { UserInfo } from '../UserInfo/UserInfo';
 import { Login } from '../Login/Login';
 import Link from 'next/link';
+
 const HEADER_HEIGHT = rem(80);
 
 const useStyles = createStyles((theme) => ({
@@ -102,7 +103,7 @@ export function Header({ links }: HeaderResponsiveProps) {
   const [active, setActive] = useState(links[0]?.link);
   const { classes, cx } = useStyles();
 
-  const { colorScheme } = useMantineColorScheme()
+  const { colorScheme, toggleColorScheme } = useMantineColorScheme()
 
 
   const items = links?.map((link) => (

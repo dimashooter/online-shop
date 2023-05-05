@@ -12,7 +12,6 @@ const Courses = () => {
   const { data: courses, isLoading, } = api.courses.getAll.useQuery(undefined, {
     enabled: Boolean(user.data)
   })
-  console.log(isLoading);
 
   if (isLoading && Boolean(user.data)) {
     return <Loader />

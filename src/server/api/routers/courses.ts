@@ -28,5 +28,25 @@ export const courcesRouter = createTRPCRouter({
     })
     
     return data
+  }),
+
+  editCourse:protectedProcedure.input(z.object({courseId:z.string(),title:z.string(),description:z.string()})).mutation(async ({ctx,input}) => {
+
+    const userId = ctx.session.user.id
+
+    const data = await ctx.prisma.course.updateMany({
+      where:{
+        id: input.courseId,
+        userId,
+      },
+      data:{
+        description:input.description,
+        title:input.title,
+      }
+    })
+    
+    return data
   })
+
+
 })
