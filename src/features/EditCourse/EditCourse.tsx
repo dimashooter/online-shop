@@ -1,6 +1,6 @@
-import { Button, Stack, TextInput } from '@mantine/core'
+import { Button, Flex, Stack, TextInput } from '@mantine/core'
 import { useForm } from '@mantine/form'
-import React, { memo } from 'react'
+import React, { memo, useCallback } from 'react'
 import { api } from '~/utils/api'
 
 
@@ -9,9 +9,10 @@ interface EditCourseType {
   description: string | undefined,
   close: () => void
   id: string
+  refetch: () => void
 }
 
-const EditCourse = ({ close, title, description, id }: EditCourseType) => {
+const EditCourse = ({ close, title, description, id, refetch }: EditCourseType) => {
 
   const form = useForm({
     initialValues: {
@@ -29,6 +30,12 @@ const EditCourse = ({ close, title, description, id }: EditCourseType) => {
       close()
     }
   })
+  const resetHandler = useCallback(() => {
+    form.setValues({
+      title, description
+    })
+    close()
+  }, [description, form, title, close])
   return (
     <div>
       <Stack>
@@ -38,6 +45,7 @@ const EditCourse = ({ close, title, description, id }: EditCourseType) => {
             courseId: id
           })
           form.reset()
+          refetch()
         })}>
 
           <TextInput
@@ -51,7 +59,10 @@ const EditCourse = ({ close, title, description, id }: EditCourseType) => {
             placeholder="description"
             {...form.getInputProps('description')}
           />
-          <Button type='submit'>send</Button>
+          <Flex gap={10} mt={20}>
+            <Button bg='red' type='button' onClick={resetHandler}>cancel</Button>
+            <Button type='submit'>send</Button>
+          </Flex>
         </form>
       </Stack>
     </div>

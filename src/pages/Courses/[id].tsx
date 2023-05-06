@@ -51,7 +51,7 @@ const FullCourse = () => {
             justifyContent: 'space-between',
             gap: '10px'
           }}>
-            <EditCourse id={id} close={closeEdit} title={course?.title}
+            <EditCourse id={id} close={closeEdit} title={course?.title} refetch={refetch}
               description={course?.description} />
             <Button>
               <IconEdit onClick={closeEdit} />

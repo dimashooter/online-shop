@@ -6,7 +6,7 @@ import { api } from '~/utils/api';
 import { toast } from 'react-hot-toast';
 
 interface ModalProps {
-  children: ReactNode
+  children?: ReactNode
 }
 
 enum STEPS {

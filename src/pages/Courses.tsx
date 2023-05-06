@@ -28,9 +28,7 @@ const Courses = () => {
         marginBottom: "5em"
       })}>
         <Text size='lg'  >Maintain courses</Text>
-        <Modal>
-
-        </Modal>
+        <Modal />
       </Flex>
       <Flex
         gap="50px"
