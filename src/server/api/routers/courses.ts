@@ -1,3 +1,6 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
 import { TRPCClientError } from "@trpc/client";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
@@ -20,8 +23,84 @@ export const courcesRouter = createTRPCRouter({
     })
     return data;
   }),
-  getAll: protectedProcedure.query(({ ctx }) => {
-    return ctx.prisma.course.findMany();
+  getLikedCourses: protectedProcedure.query(async ({ ctx }) => {
+    const currentUserId = ctx.session?.user.id;
+    const data =  await ctx.prisma.course.findMany({
+      orderBy:[{createdAt:'desc'}],
+      where:{
+        likes:{
+          some:{
+            userId:currentUserId
+          }
+        }
+      },
+      select:{
+        id:true,
+        description:true,
+        createdAt:true,
+        _count:{select:{likes:true}},
+        title:true,
+        likes: currentUserId === null ? false : {
+          where:{
+            userId:currentUserId
+          }
+        },
+        user:{
+          select:{
+            name:true, id:true, image:true
+          }
+        }
+              }
+      })
+    return {
+      courses: data.map((course) => {
+        return {
+          id:course.id,
+          description:course.description,
+          createdAt:course.createdAt,
+          title:course.title,
+          likeCount: course._count.likes,
+          user:course.user,
+          likedByMe:course.likes?.length > 0
+      }
+      })
+    }
+  }),
+  getAll: protectedProcedure.query(async ({ ctx }) => {
+    const currentUserId = ctx.session?.user.id;
+    const data =  await ctx.prisma.course.findMany({
+      orderBy:[{createdAt:'desc'}],
+      select:{
+        id:true,
+        description:true,
+        createdAt:true,
+        _count:{select:{likes:true}},
+        title:true,
+        likes: currentUserId === null ? false : {
+          where:{
+            userId:currentUserId
+          }
+        },
+        user:{
+          select:{
+            name:true, id:true, image:true
+          }
+        }
+              }
+      })
+    return {
+      courses: data.map((course) => {
+        return {
+          id:course.id,
+          description:course.description,
+          createdAt:course.createdAt,
+          title:course.title,
+          likeCount: course._count.likes,
+          user:course.user,
+          likedByMe:course.likes?.length > 0
+      }
+      })
+    }
   }),
   getOne:protectedProcedure.input(z.object({courseId:z.string()})).query(async ({ctx,input}) => {
     const data = await ctx.prisma.course.findFirst({
@@ -33,20 +112,22 @@ export const courcesRouter = createTRPCRouter({
     return data
   }),
 
-  editCourse:protectedProcedure.input(z.object({courseId:z.string(),title:z.string(),description:z.string()})).mutation(async ({ctx,input}) => {
+  editCourse:protectedProcedure.input(z.object({courseId:z.string(),title:z.string(),description:z.string()})).mutation(async ({ctx,input:{courseId,description,title}}) => {
 
     const userId = ctx.session.user.id
 
+    
     const data = await ctx.prisma.course.updateMany({
       where:{
-        id: input.courseId,
-        userId,
+        id:courseId
       },
       data:{
-        description:input.description,
-        title:input.title,
+        description:description,
+        title:title,
       }
     })
+
+    if(data === null) return;
     
     return data
   }),
@@ -59,8 +140,6 @@ export const courcesRouter = createTRPCRouter({
         id:input.courseId
       }
     })
-    console.log(course);
-
     if(!course){
       return new TRPCError({code:"NOT_FOUND"})
     }
@@ -84,8 +163,29 @@ export const courcesRouter = createTRPCRouter({
       }
     })
     return data
+  }),
+  toggleLike: protectedProcedure
+    .input(z.object({ id: z.string() }))
+    .mutation(async ({ input: { id }, ctx }) => {      
+      const data = {CourseId:id,userId: ctx.session.user.id}
+
+      const likeExist = await ctx.prisma.like.findUnique({
+        where:{
+          userId_CourseId:data
+        }
+      })
+
+      if(likeExist === null){
+        await ctx.prisma.like.create({data})
+        return {addedLike:true}
+      }  else {
+        await ctx.prisma.like.delete({
+          where:{
+            userId_CourseId:data
+          }
+        })
+        return {addedLike:false}
+      }
   })
-  
-   
 
 })

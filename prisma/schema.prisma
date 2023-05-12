@@ -57,6 +57,9 @@ model User {
     sessions      Session[]
     Course        Course[]
     Reservation   Reservation[]
+    likes         Like[]
+    followers     User[]        @relation(name: "Followers")
+    follows       User[]        @relation(name: "Followers")
 }
 
 model VerificationToken {
@@ -75,6 +78,9 @@ model Course {
     description String
     createdAt   DateTime      @default(now())
     Reservation Reservation[]
+    likes       Like[]
+
+    @@unique([createdAt, id])
 }
 
 model Reservation {
@@ -83,4 +89,15 @@ model Reservation {
     courseId String
     user     User   @relation(fields: [userId], references: [id])
     course   Course @relation(fields: [courseId], references: [id])
+}
+
+model Like {
+    userId   String
+    CourseId String
+    user     User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+    couse    Course @relation(fields: [CourseId], references: [id], onDelete: Cascade)
+
+    @@id([userId, CourseId])
+    @@index([userId])
+    @@index([CourseId])
 }

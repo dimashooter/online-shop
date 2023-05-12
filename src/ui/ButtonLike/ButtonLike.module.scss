@@ -1,0 +1,12 @@
+.button {
+  padding: 0.25rem;
+  margin: 0.25rem;
+  border: none;
+  outline: none;
+  background: none;
+  cursor: pointer;
+
+  &:disabled {
+    opacity: 0.5;
+  }
+}

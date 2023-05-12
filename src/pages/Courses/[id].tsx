@@ -1,5 +1,6 @@
 import { Button, Flex, Loader, Stack, Text } from '@mantine/core'
 import { IconEdit } from '@tabler/icons-react'
+import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { useCallback, useState } from 'react'
 import { toast } from 'react-hot-toast'
@@ -39,11 +40,11 @@ const FullCourse = () => {
     )
   }
 
-  console.log(isEdit);
-
-
   return (
     <>
+      <Head>
+        <title>Course page</title>
+      </Head>
       {
         isEdit ?
           <div style={{
