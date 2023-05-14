@@ -79,6 +79,7 @@ model Course {
     createdAt   DateTime      @default(now())
     Reservation Reservation[]
     likes       Like[]
+    createdByMe Boolean       @default(false)
 
     @@unique([createdAt, id])
 }

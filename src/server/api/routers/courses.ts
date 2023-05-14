@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
-import { TRPCClientError } from "@trpc/client";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 
@@ -9,7 +8,6 @@ import {
   createTRPCRouter,
   protectedProcedure,
 } from "~/server/api/trpc";
-import { api } from "~/utils/api";
 
 export const courcesRouter = createTRPCRouter({
   createCourse: protectedProcedure.input(z.object({title:z.string(),description:z.string()})).mutation(async ({ctx,input}) => {
@@ -75,6 +73,7 @@ export const courcesRouter = createTRPCRouter({
         description:true,
         createdAt:true,
         _count:{select:{likes:true}},
+        createdByMe:true,
         title:true,
         likes: currentUserId === null ? false : {
           where:{
@@ -97,7 +96,8 @@ export const courcesRouter = createTRPCRouter({
           title:course.title,
           likeCount: course._count.likes,
           user:course.user,
-          likedByMe:course.likes?.length > 0
+          likedByMe:course.likes?.length > 0,
+          myCourse: course.user.id === currentUserId
       }
       })
     }
@@ -113,9 +113,6 @@ export const courcesRouter = createTRPCRouter({
   }),
 
   editCourse:protectedProcedure.input(z.object({courseId:z.string(),title:z.string(),description:z.string()})).mutation(async ({ctx,input:{courseId,description,title}}) => {
-
-    const userId = ctx.session.user.id
-
     
     const data = await ctx.prisma.course.updateMany({
       where:{

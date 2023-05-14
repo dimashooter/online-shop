@@ -18,7 +18,7 @@ const CoursesList = ({ courses }: CoursesListProps) => {
     >
       {
         courses.map(course => (
-          <Card key={course.id}
+          <Card myCourse={course.myCourse} key={course.id}
             id={course.id} description={course.description} createdAt={course.createdAt} likeCount={course.likeCount} title={course.title} user={course.user} likedByMe={course.likedByMe} />
         ))
       }

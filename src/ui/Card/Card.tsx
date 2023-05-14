@@ -17,6 +17,7 @@ export interface Course {
   likedByMe: boolean
   title: string,
   user: User
+  myCourse: boolean
 
 }
 type User = {
@@ -28,7 +29,7 @@ type User = {
 
 
 export const Card = memo((props: Course) => {
-  const { createdAt, description, id, likeCount, likedByMe, title, user } = props
+  const { createdAt, description, id, likeCount, likedByMe, title, user, myCourse } = props
 
   const trpcUtils = api.useContext()
   const date = dayjs(createdAt).format('YYYY-MM-DD HH:mm:ss')
@@ -97,6 +98,7 @@ export const Card = memo((props: Course) => {
       <Flex align='center' justify='space-between'>
         <Text fz={'sm'}>{date}</Text>
         <ButtonLike isloading={toggleLike.isLoading} onClick={handleToggleLike} likeCount={likeCount} likedByMe={likedByMe} />
+        {myCourse && <Button variant='filled' color='red'>delete</Button>}
       </Flex>
     </CardM >
   );

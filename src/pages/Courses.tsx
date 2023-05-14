@@ -22,7 +22,6 @@ const Courses = () => {
   if (isLoading && Boolean(user.data)) {
     return <Loader />
   }
-
   return (
     <div>
       <Head>
