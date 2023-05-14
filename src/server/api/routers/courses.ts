@@ -21,6 +21,20 @@ export const courcesRouter = createTRPCRouter({
     })
     return data;
   }),
+
+  deleteCourse: protectedProcedure.input(z.object({courseId:z.string()})).mutation( async({ctx,input:{courseId}}) => {
+
+    const data = ctx.prisma.course.delete({
+      where:{
+        id:courseId 
+      }
+    })
+    if(data === null){
+      return new TRPCError({code:'NOT_FOUND'})
+    } 
+    return data
+  }),
+  
   getLikedCourses: protectedProcedure.query(async ({ ctx }) => {
     const currentUserId = ctx.session?.user.id;
     const data =  await ctx.prisma.course.findMany({

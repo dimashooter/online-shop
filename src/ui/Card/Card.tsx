@@ -7,7 +7,8 @@ import { Heading } from '../Heading/Heading';
 import dayjs from 'dayjs'
 import { api } from '~/utils/api';
 import { ButtonLike } from '../ButtonLike/ButtonLike';
-import { memo } from 'react';
+import { memo, useCallback } from 'react';
+import { toast } from 'react-hot-toast';
 
 export interface Course {
   id: string
@@ -33,6 +34,13 @@ export const Card = memo((props: Course) => {
 
   const trpcUtils = api.useContext()
   const date = dayjs(createdAt).format('YYYY-MM-DD HH:mm:ss')
+
+  const deleteCourse = api.courses.deleteCourse.useMutation({
+    onSuccess: async () => {
+      toast.success('course deleted!')
+      await trpcUtils.courses.getAll.invalidate()
+    }
+  })
   const toggleLike = api.courses.toggleLike.useMutation({
     // onSuccess: ({ addedLike }) => {
     //   const updateData: Parameters<
@@ -74,6 +82,12 @@ export const Card = memo((props: Course) => {
     toggleLike.mutate({ id })
   }
 
+  const handleDeleteCourse = useCallback(() => {
+    if (confirm('Are u sure?')) {
+      deleteCourse.mutate({ courseId: id })
+    }
+  }, [deleteCourse, id])
+
   return (
     <CardM sx={() => ({
       maxWidth: '400px'
@@ -98,7 +112,7 @@ export const Card = memo((props: Course) => {
       <Flex align='center' justify='space-between'>
         <Text fz={'sm'}>{date}</Text>
         <ButtonLike isloading={toggleLike.isLoading} onClick={handleToggleLike} likeCount={likeCount} likedByMe={likedByMe} />
-        {myCourse && <Button variant='filled' color='red'>delete</Button>}
+        {myCourse && <Button onClick={handleDeleteCourse} variant='filled' color='red'>delete</Button>}
       </Flex>
     </CardM >
   );
